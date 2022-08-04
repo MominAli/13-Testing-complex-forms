@@ -1,0 +1,13 @@
+<p
+  *ngIf="
+    internalControl &&
+    internalControl.invalid &&
+    (internalControl.touched || internalControl.dirty)
+  "
+  class="error-text"
+  role="alert"
+  data-testid="control-error"
+>
+  <span class="control-error-mark" aria-hidden="true">❗ </span>
+  <ng-container *ngTemplateOutlet="template; context: templateContext"></ng-container>
+</p>

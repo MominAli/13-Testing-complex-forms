@@ -1,0 +1,506 @@
+<h1>Sign-up</h1>
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()" data-testid="form">
+  <fieldset>
+    <legend>Choose your plan</legend>
+
+    <!-- ******************************************* -->
+    <div class="field-block">
+      <ul class="plans">
+        <li class="plan">
+          <label class="plan-label">
+            <input
+              type="radio"
+              formControlName="plan"
+              name="plan"
+              [value]="PERSONAL"
+              class="plan-radio"
+              data-testid="plan-personal"
+            />
+            <div class="plan-card">
+              <p class="plan-name"><strong>Personal</strong></p>
+              <p class="plan-description">$ 1 per month</p>
+              <p class="plan-description">Free 30 day trial</p>
+              <p class="plan-description">No credit card required</p>
+            </div>
+          </label>
+        </li>
+        <li class="plan">
+          <label class="plan-label">
+            <input
+              type="radio"
+              formControlName="plan"
+              name="plan"
+              [value]="BUSINESS"
+              class="plan-radio"
+              data-testid="plan-business"
+            />
+            <div class="plan-card">
+              <p class="plan-name"><strong>Business</strong></p>
+              <p class="plan-description">$ 10 per month</p>
+              <p class="plan-description">Free 30 day trial</p>
+              <p class="plan-description">No credit card required</p>
+            </div>
+          </label>
+        </li>
+        <li class="plan">
+          <label class="plan-label">
+            <input
+              type="radio"
+              formControlName="plan"
+              name="plan"
+              [value]="NON_PROFIT"
+              class="plan-radio"
+              data-testid="plan-non-profit"
+            />
+            <div class="plan-card">
+              <p class="plan-name">
+                <strong>Education &<br />Non-profit</strong>
+              </p>
+              <p class="plan-description">Free forever</p>
+              <p class="plan-description">
+                For students, schools and non-profit organizations
+              </p>
+            </div>
+          </label>
+        </li>
+      </ul>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Account basics</legend>
+
+    <!-- ******************************************* -->
+    <div class="field-block">
+      <p class="field-and-label">
+        <label>
+          <span class="label-text">
+            Username
+            <span class="necessity-required" aria-hidden="true">required</span>
+          </span>
+          <input
+            type="text"
+            formControlName="username"
+            aria-describedby="username-description"
+            aria-required="true"
+            appErrorMessage="username-errors"
+            autocomplete="username"
+            data-testid="username"
+          />
+        </label>
+      </p>
+      <div class="field-info">
+        <p class="field-description" id="username-description">
+          User name may only contain letters (a-z), numbers (0-9) and periods (.).
+          Example: beautiful.flower.2020
+        </p>
+        <app-control-errors controlName="username" id="username-errors">
+          <ng-template let-errors>
+            <ng-container *ngIf="errors.required">
+              User name must be given.
+            </ng-container>
+            <ng-container *ngIf="errors.pattern">
+              User name contains invalid characters.
+            </ng-container>
+            <ng-container *ngIf="errors.maxlength">
+              User name must have less then 50 characters.
+            </ng-container>
+            <ng-container *ngIf="errors.taken">
+              User name is already taken. Please choose another one.
+            </ng-container>
+          </ng-template>
+        </app-control-errors>
+      </div>
+    </div>
+
+    <!-- ******************************************* -->
+    <div class="field-block">
+      <div class="field-and-label">
+        <p>
+          <label>
+            <span class="label-text">
+              Email
+              <span class="necessity-required" aria-hidden="true">required</span>
+            </span>
+            <input
+              type="email"
+              formControlName="email"
+              aria-describedby="email-description"
+              aria-required="true"
+              appErrorMessage="email-errors"
+              autocomplete="email"
+              data-testid="email"
+            />
+          </label>
+        </p>
+      </div>
+      <div class="field-info">
+        <p class="field-description" id="email-description">
+          Example: brigitte.bryan@example.org
+        </p>
+        <app-control-errors controlName="email" id="email-errors">
+          <ng-template let-errors>
+            <ng-container *ngIf="errors.required"> Email must be given. </ng-container>
+            <ng-container *ngIf="errors.email"> Not a valid email address. </ng-container>
+            <ng-container *ngIf="errors.maxlength">
+              Email must have less then 100 characters.
+            </ng-container>
+            <ng-container *ngIf="errors.taken">
+              Email is already taken. Please choose another one.
+            </ng-container>
+          </ng-template>
+        </app-control-errors>
+      </div>
+    </div>
+
+    <!-- ******************************************* -->
+    <div class="field-block">
+      <p class="field-and-label">
+        <label>
+          <span class="label-text">
+            Password
+            <span class="necessity-required" aria-hidden="true">required</span>
+          </span>
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            id="password"
+            formControlName="password"
+            aria-describedby="password-description"
+            aria-required="true"
+            appErrorMessage="password-errors"
+            autocomplete="new-password"
+            (input)="getPasswordStrength()"
+            data-testid="password"
+          />
+        </label>
+      </p>
+      <div class="field-info">
+        <div class="field-description" id="password-description">
+          <p>
+            <button
+              type="button"
+              (click)="showPassword = !showPassword"
+              aria-controls="password"
+              data-testid="show-password"
+            >
+              {{ showPassword ? '🔒 Hide password' : '👁️ Show password' }}
+            </button>
+            <span class="visually-hidden" aria-live="polite">
+              Your password is
+              {{ showPassword ? 'shown' : 'hidden' }}
+            </span>
+          </p>
+          <div
+            *ngIf="passwordStrength$ | async as passwordStrength"
+            class="password-strength"
+          >
+            <p>
+              Strength:
+              <strong *ngIf="passwordStrength.score < 3" class="password-strength-weak">
+                Weak
+              </strong>
+              <span *ngIf="passwordStrength.score === 3" class="password-strength-fair">
+                Fair
+              </span>
+              <span *ngIf="passwordStrength.score > 3" class="password-strength-strong">
+                Strong
+              </span>
+            </p>
+            <p *ngIf="passwordStrength.warning">{{ passwordStrength.warning }}</p>
+            <p *ngFor="let suggestion of passwordStrength.suggestions">
+              {{ suggestion }}
+            </p>
+          </div>
+        </div>
+        <app-control-errors controlName="password" id="password-errors">
+          <ng-template let-errors>
+            <ng-container *ngIf="errors.required"> Password must be given. </ng-container>
+            <ng-container *ngIf="errors.weak"> Password is too weak. </ng-container>
+          </ng-template>
+        </app-control-errors>
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset formGroupName="address">
+    <legend>Address</legend>
+
+    <!-- ******************************************* -->
+    <div class="field-block">
+      <p class="field-and-label">
+        <label>
+          <span class="label-text">
+            Full name
+            <span class="necessity-required" aria-hidden="true">required</span>
+          </span>
+          <input
+            type="text"
+            formControlName="name"
+            aria-required="true"
+            appErrorMessage="name-errors"
+            autocomplete="name"
+            data-testid="name"
+          />
+        </label>
+      </p>
+      <div class="field-info">
+        <app-control-errors controlName="name" id="name-errors">
+          <ng-template let-errors>
+            <ng-container *ngIf="errors.required"> Name must be given. </ng-container>
+          </ng-template>
+        </app-control-errors>
+      </div>
+    </div>
+
+    <!-- ******************************************* -->
+    <div class="field-block">
+      <p class="field-and-label">
+        <label>
+          <span class="label-text">
+            <ng-container *ngIf="plan.value === PERSONAL"> Address line 1 </ng-container>
+            <ng-container *ngIf="plan.value === BUSINESS"> Company </ng-container>
+            <ng-container *ngIf="plan.value === NON_PROFIT"> Organization </ng-container>
+            <span *ngIf="plan.value !== PERSONAL" class="necessity-required" aria-hidden="true">
+              required
+            </span>
+            <span *ngIf="plan.value === PERSONAL" class="necessity-optional" aria-hidden="true">
+              optional
+            </span>
+          </span>
+          <input
+            type="text"
+            formControlName="addressLine1"
+            [attr.aria-required]="form.controls.plan.value !== PERSONAL ? 'true' : null"
+            appErrorMessage="addressLine1-errors"
+            autocomplete="address-line1"
+            data-testid="addressLine1"
+          />
+        </label>
+      </p>
+      <div class="field-info">
+        <app-control-errors controlName="addressLine1" id="addressLine1-errors">
+          <ng-template let-errors>
+            <ng-container *ngIf="errors.required">
+              <ng-container *ngIf="form.controls.plan.value === BUSINESS">
+                Company must be given.
+              </ng-container>
+              <ng-container *ngIf="form.controls.plan.value === NON_PROFIT">
+                Organization must be given.
+              </ng-container>
+            </ng-container>
+          </ng-template>
+        </app-control-errors>
+      </div>
+    </div>
+
+    <!-- ******************************************* -->
+    <div class="field-block">
+      <p class="field-and-label">
+        <label>
+          <span class="label-text">
+            Street and house number
+            <span class="necessity-required" aria-hidden="true">required</span>
+          </span>
+          <input
+            type="text"
+            formControlName="addressLine2"
+            aria-required="true"
+            appErrorMessage="addressLine2-errors"
+            autocomplete="address-line2"
+            data-testid="addressLine2"
+          />
+        </label>
+      </p>
+      <div class="field-info">
+        <app-control-errors controlName="addressLine2" id="addressLine2-errors">
+          <ng-template let-errors>
+            <ng-container *ngIf="errors.required">
+              Street and house number must be given.
+            </ng-container>
+          </ng-template>
+        </app-control-errors>
+      </div>
+    </div>
+
+    <!-- ******************************************* -->
+    <div class="field-block">
+      <p class="field-and-label">
+        <label>
+          <span class="label-text">
+            City
+            <span class="necessity-required" aria-hidden="true">required</span>
+          </span>
+          <input
+            type="text"
+            formControlName="city"
+            aria-required="true"
+            appErrorMessage="city-errors"
+            autocomplete="shipping address-level2"
+            data-testid="city"
+          />
+        </label>
+      </p>
+      <div class="field-info">
+        <app-control-errors controlName="city" id="city-errors">
+          <ng-template let-errors>
+            <ng-container *ngIf="errors.required"> City must be given. </ng-container>
+          </ng-template>
+        </app-control-errors>
+      </div>
+    </div>
+
+    <!-- ******************************************* -->
+    <div class="field-block">
+      <p class="field-and-label">
+        <label>
+          <span class="label-text">
+            Postcode
+            <span class="necessity-required" aria-hidden="true">required</span>
+          </span>
+          <input
+            type="text"
+            formControlName="postcode"
+            aria-required="true"
+            appErrorMessage="postcode-errors"
+            autocomplete="shipping postal-code"
+            data-testid="postcode"
+          />
+        </label>
+      </p>
+      <div class="field-info">
+        <app-control-errors controlName="postcode" id="postcode-errors">
+          <ng-template let-errors>
+            <ng-container *ngIf="errors.required"> Postcode must be given. </ng-container>
+          </ng-template>
+        </app-control-errors>
+      </div>
+    </div>
+
+    <!-- ******************************************* -->
+    <div class="field-block">
+      <p class="field-and-label">
+        <label>
+          <span class="label-text">
+            State/Province/Region
+            <span class="necessity-optional" aria-hidden="true">optional</span>
+          </span>
+          <input
+            type="text"
+            formControlName="region"
+            aria-describedby="region-description"
+            autocomplete="shipping address-level1"
+            data-testid="region"
+          />
+        </label>
+      </p>
+    </div>
+
+    <!-- ******************************************* -->
+    <div class="field-block">
+      <p class="field-and-label">
+        <label>
+          <span class="label-text">
+            Country
+            <span class="necessity-required" aria-hidden="true">required</span>
+          </span>
+          <select
+            formControlName="country"
+            aria-required="true"
+            appErrorMessage="country-errors"
+            autocomplete="shipping country"
+            data-testid="country"
+          >
+            <option>Balnibarbi</option>
+            <option>Blefuscu</option>
+            <option>Brobdingnag</option>
+            <option>Glubbdubdrib</option>
+            <option>Laputa</option>
+            <option>Lilliput</option>
+            <option>Luggnagg</option>
+          </select>
+        </label>
+      </p>
+      <div class="field-info">
+        <app-control-errors controlName="country" id="country-errors">
+          <ng-template let-errors>
+            <ng-container *ngIf="errors.required"> Country must be given. </ng-container>
+          </ng-template>
+        </app-control-errors>
+      </div>
+    </div>
+  </fieldset>
+
+  <!-- ******************************************* -->
+
+  <fieldset>
+    <legend>Terms and Services</legend>
+
+    <p>
+      <label>
+        <span class="checkbox-and-label-text">
+          <input
+            type="checkbox"
+            formControlName="tos"
+            aria-required="true"
+            appErrorMessage="tos-errors"
+            data-testid="tos"
+          />
+          <span class="label-text checkbox-label-text">
+            I accept the
+            <a
+              href="https://en.wikipedia.org/wiki/Terms_and_Conditions_May_Apply"
+              target="_blank"
+              >Terms and Services</a
+            >
+            and the
+            <a
+              href="https://www.nytimes.com/interactive/2019/opinion/internet-privacy-project.html"
+              >Privacy Policy</a
+            >
+            <span class="necessity-required" aria-hidden="true"> (required)</span>
+          </span>
+        </span>
+      </label>
+    </p>
+    <app-control-errors controlName="tos" id="tos-errors">
+      <ng-template let-errors>
+        <ng-container *ngIf="errors.required">
+          Please accept the Terms and Services.
+        </ng-container>
+      </ng-template>
+    </app-control-errors>
+  </fieldset>
+
+  <!-- ******************************************* -->
+
+  <p *ngIf="!form.valid">Please fill in the necessary fields above.</p>
+
+  <p
+    *ngIf="submitProgress === 'success'"
+    role="status"
+    class="form-submit-success"
+    data-testid="status"
+  >
+    <strong>Sign-up successful!</strong>
+  </p>
+  <p
+    *ngIf="submitProgress === 'error'"
+    role="status"
+    class="error-text form-submit-error"
+    data-testid="status"
+  >
+    <strong>Sign-up error</strong>
+  </p>
+
+  <p>
+    <button
+      *ngIf="submitProgress !== 'success'"
+      type="submit"
+      [disabled]="!form.valid"
+      data-testid="submit"
+    >
+      Sign up
+    </button>
+  </p>
+</form>

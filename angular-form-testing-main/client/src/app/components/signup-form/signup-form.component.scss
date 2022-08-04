@@ -1,0 +1,254 @@
+@use '../../sass/variables' as v;
+@use '../../sass/mixins' as m;
+
+fieldset {
+  position: relative;
+  border-style: solid none none;
+  border-color: gray;
+  border-width: 2px;
+  border-radius: 2px;
+  margin: 0 0 2rem;
+  padding: 5rem 0 0;
+
+  @media (min-width: 40rem) {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+legend {
+  position: absolute;
+  top: 1.5rem;
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+.field-block {
+  margin-bottom: 1.5rem;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+}
+
+input[type='text'],
+input[type='number'],
+input[type='email'],
+input[type='password'],
+select,
+button[type='submit'] {
+  width: 100%;
+}
+
+@media (min-width: 40rem) {
+  .field-block {
+    display: flex;
+  }
+
+  .field-and-label {
+    margin-right: 2rem;
+    margin-bottom: 0;
+    flex: 0 0 20rem;
+  }
+
+  .field-info {
+    padding-top: 1.2rem + 0.5rem;
+  }
+
+  .field-info-checkbox {
+    padding-top: 0;
+  }
+}
+
+.label-text {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 0.5rem;
+}
+
+.necessity-required,
+.necessity-optional {
+  font-weight: normal;
+  font-size: 80%;
+}
+
+.necessity-optional {
+  color: #666;
+
+  @include m.dark-scheme {
+    color: #aaa;
+  }
+}
+
+.checkbox-and-label-text {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+}
+
+input[type='checkbox'] {
+  margin: 0 1rem;
+}
+
+.checkbox-label-text {
+  display: inline;
+  font-weight: normal;
+}
+
+.plans {
+  padding: 0;
+  list-style-type: none;
+
+  @media (min-width: 40rem) {
+    display: flex;
+    margin: 0 -0.5rem;
+  }
+}
+
+.plan {
+  text-align: center;
+
+  @media (min-width: 40rem) {
+    flex: 1;
+    margin: 0 0.5rem;
+  }
+}
+
+.plan + .plan {
+  margin-top: 1rem;
+
+  @media (min-width: 40rem) {
+    margin-top: 0;
+  }
+}
+
+.plan-label {
+  height: 100%;
+}
+
+.plan-radio {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+}
+
+.plan-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: 2px solid v.$field-border-light;
+  border-radius: 2px;
+  background-color: v.$field-background-light;
+  padding: 1.5rem 1rem;
+  height: 100%;
+  transition-property: color, border-color, transform, background-color;
+  transition-duration: 150ms;
+  transition-timing-function: ease;
+  transform: scale(0.965);
+
+  @include m.dark-scheme {
+    border-color: v.$field-border-dark;
+    background-color: v.$field-background-dark;
+  }
+}
+
+.plan-radio:checked + .plan-card {
+  transform: scale(1);
+  border-color: v.$field-border-selected-light;
+  background-color: v.$field-background-selected-light;
+
+  @include m.dark-scheme {
+    border-color: v.$field-border-selected-dark;
+    background-color: v.$field-background-selected-dark;
+    color: white;
+  }
+}
+
+.plan-radio:focus + .plan-card {
+  border-color: v.$primary-color;
+}
+
+.plan-name {
+  font-size: 1.5rem;
+
+  @media (min-width: 40rem) {
+    font-size: 1.6rem;
+  }
+}
+
+.plan-description {
+  font-weight: normal;
+
+  @media (min-width: 40rem) {
+    font-size: 1.2rem;
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.password-strength-weak {
+  color: v.$error-color-light;
+
+  @include m.dark-scheme {
+    color: v.$error-color-dark;
+  }
+}
+
+.password-strength-fair {
+  color: orange;
+}
+
+.password-strength-strong {
+  color: v.$success-color-light;
+
+  @include m.dark-scheme {
+    color: v.$success-color-dark;
+  }
+}
+
+button[type='submit'] {
+  width: 100%;
+  font-size: 1.2rem;
+
+  @media (min-width: 40rem) {
+    max-width: 20rem;
+  }
+}
+
+.form-submit-success,
+.form-submit-error {
+  padding: 1rem;
+}
+
+.form-submit-success {
+  background-color: palegreen;
+  color: green;
+}
+
+.form-submit-error {
+  background-color: blanchedalmond;
+}
+
+/*
+Hide and show content accessibly. The content is visually hidden,
+but assistive technologies like screen readers still read it.
+http://snook.ca/archives/html_and_css/hiding-content-for-accessibility
+*/
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  border: 0;
+  white-space: nowrap;
+}
